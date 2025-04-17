@@ -1,0 +1,671 @@
+Metadata-Version: 2.2
+Name: DocstringGenerator
+Version: 0.1.0
+Summary: DocAgent for High-quality docstring generation in Large-scale Python projects
+Author: Dayu Yang
+Author-email: dayuyang@meta.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.23.5
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: jinja2>=3.1.5
+Requires-Dist: requests>=2.32.0
+Requires-Dist: urllib3>=2.3.0
+Requires-Dist: astor>=0.8.1
+Requires-Dist: code2flow>=2.5.1
+Requires-Dist: pydeps>=3.0.0
+Requires-Dist: anthropic>=0.45.0
+Requires-Dist: openai>=1.60.1
+Requires-Dist: langchain-anthropic>=0.3.4
+Requires-Dist: langchain-openai>=0.3.2
+Requires-Dist: langchain-core>=0.3.31
+Requires-Dist: langgraph>=0.2.67
+Requires-Dist: tiktoken>=0.8.0
+Requires-Dist: transformers>=4.48.0
+Requires-Dist: huggingface-hub>=0.28.0
+Requires-Dist: google-generativeai>=0.6.0
+Requires-Dist: tqdm>=4.67.1
+Requires-Dist: tabulate>=0.9.0
+Requires-Dist: colorama>=0.4.6
+Requires-Dist: termcolor>=2.5.0
+Requires-Dist: pydantic>=2.10.0
+Requires-Dist: flask>=3.1.0
+Requires-Dist: flask-socketio>=5.5.1
+Requires-Dist: eventlet>=0.39.0
+Requires-Dist: python-socketio>=5.12.1
+Requires-Dist: python-engineio>=4.11.2
+Requires-Dist: bidict>=0.23.0
+Requires-Dist: dnspython>=2.7.0
+Requires-Dist: six>=1.16.0
+Requires-Dist: torch>=2.0.0
+Requires-Dist: accelerate>=1.4.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.4; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Provides-Extra: web
+Requires-Dist: flask>=3.1.0; extra == "web"
+Requires-Dist: flask-socketio>=5.5.1; extra == "web"
+Requires-Dist: eventlet>=0.39.0; extra == "web"
+Requires-Dist: python-socketio>=5.12.1; extra == "web"
+Requires-Dist: python-engineio>=4.11.2; extra == "web"
+Requires-Dist: bidict>=0.23.0; extra == "web"
+Requires-Dist: dnspython>=2.7.0; extra == "web"
+Requires-Dist: six>=1.16.0; extra == "web"
+Provides-Extra: visualization
+Requires-Dist: matplotlib>=3.10.0; extra == "visualization"
+Requires-Dist: pygraphviz>=1.14; extra == "visualization"
+Requires-Dist: networkx>=3.4.2; extra == "visualization"
+Provides-Extra: cuda
+Requires-Dist: torch>=2.0.0; extra == "cuda"
+Requires-Dist: accelerate>=1.4.0; extra == "cuda"
+Provides-Extra: all
+Requires-Dist: pytest>=8.3.4; extra == "all"
+Requires-Dist: pytest-cov>=2.0; extra == "all"
+Requires-Dist: black>=22.0; extra == "all"
+Requires-Dist: flake8>=3.9; extra == "all"
+Requires-Dist: flask>=3.1.0; extra == "all"
+Requires-Dist: flask-socketio>=5.5.1; extra == "all"
+Requires-Dist: eventlet>=0.39.0; extra == "all"
+Requires-Dist: python-socketio>=5.12.1; extra == "all"
+Requires-Dist: python-engineio>=4.11.2; extra == "all"
+Requires-Dist: bidict>=0.23.0; extra == "all"
+Requires-Dist: dnspython>=2.7.0; extra == "all"
+Requires-Dist: six>=1.16.0; extra == "all"
+Requires-Dist: matplotlib>=3.10.0; extra == "all"
+Requires-Dist: pygraphviz>=1.14; extra == "all"
+Requires-Dist: networkx>=3.4.2; extra == "all"
+Requires-Dist: torch>=2.0.0; extra == "all"
+Requires-Dist: accelerate>=1.4.0; extra == "all"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# DocAgent: Agentic Hierarchical Docstring Generation System
+
+<p align="center">
+  <img src="assets/meta_logo_white.png" width="20%" alt="Meta Logo">
+</p>
+
+DocAgent is a system designed to generate high-quality, context-aware docstrings for Python codebases using a multi-agent approach and hierarchical processing.
+
+## Table of Contents
+
+- [Motivation](#motivation)
+- [Methodology](#methodology)
+- [Installation](#installation)
+- [Components](#components)
+- [Usage](#usage)
+- [Data Handling](#data-handling)
+- [Baselines](#baselines)
+- [Development Notes](#development-notes)
+
+## Motivation
+
+High-quality docstrings are crucial for code readability, usability, and maintainability, especially in large repositories. They should explain the purpose, parameters, returns, exceptions, and usage within the broader context. Current LLMs often struggle with this, producing superficial or redundant comments and failing to capture essential context or rationale. DocAgent aims to address these limitations by generating informative, concise, and contextually aware docstrings.
+
+## Methodology
+
+DocAgent employs two key strategies:
+
+1.  **Hierarchical Traversal**: Processes code components by analyzing dependencies, starting with files having fewer dependencies. This builds a documented foundation before tackling more complex code, addressing the challenge of documenting context that itself lacks documentation.
+2.  **Agentic System**: Utilizes a team of specialized agents (`Reader`, `Searcher`, `Writer`, `Verifier`) coordinated by an `Orchestrator`. This system gathers context (internal and external), drafts docstrings according to standards, and verifies their quality in an iterative process.
+
+<img src="assets/system.png" width="100%" alt="System Overview">
+
+For more details on the agentic framework, see the [Agent Component README](./src/agent/README.md).
+
+## Installation
+
+Detailed installation instructions using `pip` or `conda`, including optional dependencies and troubleshooting tips, can be found in [INSTALL.md](./INSTALL.md).
+
+## Components
+
+DocAgent is composed of several key parts:
+
+- **[Core Agent Framework](./src/agent/README.md)**: Implements the multi-agent system (Reader, Searcher, Writer, Verifier, Orchestrator) responsible for the generation logic.
+- **[Docstring Evaluator](./src/evaluator/README.md)**: Provides tools for evaluating docstring quality, primarily focusing on completeness based on static code analysis (AST).
+- **[Generation Web UI](./src/web/README.md)**: A web interface for configuring, running, and monitoring the docstring *generation* process in real-time, visualizing agent activity and repository structure.
+- **[Evaluation Web UI](./src/web_eval/README.md)**: A separate web interface for configuring and running docstring *evaluations*, assessing completeness and helpfulness (using LLMs).
+
+## Usage
+
+The primary ways to interact with DocAgent are:
+
+1.  **Generation Web UI**: Recommended for visualizing the generation process. Launch via:
+    ```bash
+    python run_web_ui.py
+    ```
+    Then access `http://localhost:5000` (or as configured). See the [Generation Web UI README](./src/web/README.md) for details.
+
+2.  **Evaluation Web UI**: Recommended for assessing docstring quality. Launch via:
+    ```bash
+    cd src/web_eval
+    ./start_server.sh # Or python app.py
+    ```
+    Then access `http://localhost:5000` (or as configured). See the [Evaluation Web UI README](./src/web_eval/README.md) for details.
+
+3.  **Command Line (Generation)**: Run the generation process directly:
+    ```bash
+    # Example: Run on a test repo, removing existing docstrings first
+    ./tool/remove_docstrings.sh data/raw_test_repo
+    python generate_docstrings.py --repo-path data/raw_test_repo
+    ```
+    Use `--help` for more options.
+
+## Data Handling
+
+Tools are included for managing datasets for evaluation:
+
+- **GitHub Repository Downloader (`src/data/parse/downloader.py`)**: Finds and downloads GitHub repositories based on configurable criteria (language, stars, size, etc.).
+- **Repository Selection (`experiments/select_repos.py`)**: Selects a diverse subset of downloaded repositories based on metrics like code size and complexity.
+
+(See original README sections for detailed usage if needed).
+
+## Baselines
+
+A simple "copy and paste" baseline is implemented (`experiments/generate_docstrings_copy_and_paste.py`) for comparison. It sends isolated code components to an LLM without context.
+
+```bash
+# Example: Run baseline on a test repo
+./tool/remove_docstrings.sh data/raw_test_repo
+python experiments/generate_docstrings_copy_and_paste.py --repo-path data/raw_test_repo
+```
+
+## Development Notes
+
+- Remember to activate your chosen environment (`pip` or `conda`).
+- Use `pip install -e ".[dev]"` for development dependencies.
+- Run tests using `pytest`.
+- See [INSTALL.md](./INSTALL.md) for setting up system dependencies like GraphViz if needed for visualizations.
+
+---
+*This README provides a high-level overview. Please refer to the linked component READMEs and `INSTALL.md` for specific details.*
+
+# Todo
+
+- repo-level eval script
+- argument vs parameter
+- "Need more information" seems does not work for codellama34B and gemini.
+- some repo depends on "not-install" package(ask you to install autogen after download the repo)
+- Query should also search internally
+- truncated "called by", especially Class (too long)
+- Overkill issue
+
+# For ACL Experiments
+
+## Note
+
+class evaluate:
+- really means eval the init function (if has init)
+
+
+## Data
+
+### GitHub Repository Downloader
+
+The project includes a GitHubRepoDownloader that automates the process of finding and downloading repositories for docstring generation tasks. This tool allows you to specify various criteria to target repositories that match your requirements.
+
+#### Features:
+
+- **Configurable Search Criteria**: Filter repositories by owner, creation date, language, stars, forks, size, and license.
+- **Python Language Filtering**: Ensures downloaded repositories contain a minimum percentage of Python code (default: 80%).
+- **Repository Metadata**: Automatically saves metadata about each downloaded repository.
+- **Rate Limit Handling**: Respects GitHub API rate limits to avoid throttling.
+- **Logging**: Comprehensive logging of the download process.
+
+#### Usage:
+
+To download repositories, create a configuration file and run the downloader:
+
+```bash
+python -m src.data.parse.downloader
+```
+
+#### Configuration:
+
+Create a YAML configuration file with the following structure:
+
+```yaml
+# GitHub authentication
+GITHUB_TOKEN: "your-github-token"
+
+# Output directory
+output_directory: "data/downloaded_repos"
+
+# Repository limits
+max_repos: 10
+skip_archived: true
+skip_forks: true
+min_python_percentage: 80  # Minimum percentage of Python code required
+
+# Search criteria
+search_criteria:
+  language: "python"
+  stars:
+    min: 100
+  forks:
+    min: 10
+  dates:
+    created_after: "2020-01-01"
+  owners:
+    - "username1"
+    - "org_name"
+```
+
+The downloader will:
+1. Search GitHub repositories matching your criteria
+2. Check if each repository meets the Python percentage requirement
+3. Clone qualifying repositories to the specified output directory
+4. Save repository metadata for further analysis
+
+### Repository Selection
+
+After downloading repositories, you may want to select a diverse subset for analysis. The project includes a repository selection tool that helps you choose repositories with varying characteristics:
+
+#### Features:
+
+- **Diversity-Based Selection**: Select repositories based on code size and structural complexity.
+- **Code Size Metrics**: Calculates the number of Python files and total lines of code.
+- **Topological Complexity**: Measures the depth of the repository directory structure.
+- **Visualization**: Generates scatter plots showing the distribution of selected repositories.
+
+#### Usage:
+
+To select repositories from your downloaded collection:
+
+```bash
+python -m experiments.select_repos
+```
+
+#### Process:
+
+The selection process follows these steps:
+1. Analyzes each repository to extract metrics (Python files count, total lines, directory depth)
+2. Normalizes the metrics to ensure fair comparison
+3. Creates clusters of repositories with similar characteristics
+4. Selects representatives from each cluster to ensure diversity
+5. Generates a visualization of the selection results
+
+This approach ensures that your analysis includes repositories with varying sizes and complexity levels, providing a more comprehensive evaluation of docstring generation techniques.
+
+##  Baseline
+
+### Copy and Paste
+We implemented a simple "copy and paste" baseline system that mimics the approach of users copying code components and pasting them directly to an LLM interface. This baseline:
+
+1. Extracts individual code components (functions, classes, methods) from Python files
+2. Sends only the component's source code to an LLM without any surrounding context
+3. Asks the LLM to generate a docstring based solely on that isolated component
+4. Inserts the generated docstring back into the code
+
+This baseline serves as a comparison point to demonstrate the effectiveness of our full agentic hierarchical system, which considers dependency relationships and broader context when generating docstrings.
+
+To run the baseline system:
+
+```bash
+clear
+./tool/remove_docstrings.sh data/raw_test_repo
+python experiments/generate_docstrings_copy_and_paste.py --repo-path data/raw_test_repo
+```
+
+The baseline uses the same configuration file (agent_config.yaml) as the main system, so it can work with any supported LLM (Claude, OpenAI, HuggingFace).
+
+To run in placeholder mode (no actual LLM calls):
+
+```bash
+python experiments/generate_docstrings_copy_and_paste.py --repo-path data/raw_test_repo --test-mode placeholder
+```
+
+To overwrite existing docstrings:
+
+```bash
+python experiments/generate_docstrings_copy_and_paste.py --repo-path data/raw_test_repo --overwrite-docstrings
+```
+
+
+### Main Experiments
+
+
+
+## Motivation:
+
+In the realm of large-scale software repositories, the presence of high-quality, user-oriented docstrings is crucial for maintaining code readability, usability, and maintainability. A well-crafted docstring should not only provide comprehensive details about parameters, return values, exceptions, and usage examples but also clearly articulate the purpose of the function or class within the broader context of the repository. This includes explaining when and how to use the function or class, as well as its relationship to other components in the codebase.
+Despite the importance of such documentation, current large language models (LLMs) often fall short in generating docstrings that meet these expectations. Common issues include the production of redundant or superficial commentary, a failure to highlight the underlying rationale behind implementation choices, and the omission of crucial constraints and assumptions. These shortcomings can lead to misunderstandings and inefficiencies for developers who rely on these docstrings for guidance.
+The challenge, therefore, is to develop methods that enable the generation of high-quality docstrings that are both informative and concise, avoiding redundancy by not reiterating information that can be inferred from the code itself, such as parameter types when type hints are present. Addressing these challenges is essential for enhancing the utility of docstrings in large-scale repositories, ultimately contributing to more efficient and effective software development processes.
+
+## Challenges and Limitations of Existing Docstring Generation System:
+
+The task of generating high-quality docstrings in large-scale repositories presents several significant challenges. One of the primary difficulties lies in the evaluation of docstring quality. There is inherent ambiguity in assessing what constitutes a "good" docstring, as gold-standard data is scarce. Even highly-rated repositories often contain docstrings that are either inadequate or only partially effective, complicating the establishment of reliable benchmarks for quality assessment.
+Another challenge is the limitation imposed by the context window of large language models (LLMs). It is impractical to include an entire repository in a single prompt, necessitating a focus on selecting and summarizing relevant information. Determining what is "relevant" is crucial for providing the LLM with a comprehensive understanding of the purpose of the focal function or class. This involves discerning which aspects of the codebase should be included to give the LLM a "global sense" of the function's or class's role and significance.
+Furthermore, there is a "chicken and egg" problem inherent in this task. Generating high-quality docstrings requires a well-rounded understanding of the context in which the focal function or class operates. However, the context itself often lacks sufficient documentation to clearly convey its purpose and interrelations. This lack of existing high-quality docstrings in the surrounding code complicates the process of generating new ones, as the foundational understanding needed to inform the generation process is itself incomplete.
+Addressing these challenges is essential for advancing the capability of LLMs to produce docstrings that are not only informative and concise but also contextually aware and aligned with the broader objectives of the codebase.
+
+## Methodology:
+
+To address the challenges of generating high-quality docstrings in large-scale repositories, we propose a hierarchical traversal approach combined with an agentic system composed of specialized roles: reader, searcher, writer, and verifier. This methodology is designed to systematically and efficiently produce comprehensive and contextually aware docstrings.
+
+Hierarchical Traverse
+
+The hierarchical traverse principle is central to our approach. By prioritizing the generation of docstrings for source code files with fewer dependencies, we aim to build a solid foundation of well-documented base classes and utility functions before tackling more complex implementations. This strategy effectively addresses the "chicken and egg" problem by ensuring that the foundational components of the codebase are well-understood and documented first. Unlike existing systems that generate docstrings in a random order, our method provides a structured and logical progression through the codebase.
+
+Agentic System
+
+Our agentic system is designed to facilitate the docstring generation process through a series of coordinated roles:
+
+- Reader: The reader initiates the process by examining the focal code component and identifying any additional internal or external information needed to understand its purpose and context. If further information is required, the reader sends a request to the searcher.
+- Searcher: The searcher traverses the dependency graph to gather relevant information, both from within the codebase and from open-internet sources if necessary. This information is then used to update the context state, providing a more comprehensive understanding of the focal component.
+- Writer: Once the context is deemed sufficient, the reader passes the focal code component and its context to the writer. The - writer drafts the docstring, ensuring it adheres to the specified quality and instructional guidelines.
+- Verifier: The verifier conducts a final quality check of the drafted docstring. If formatting issues are detected, the docstring is returned to the writer for revision. If additional context is needed to enhance informativeness, the process returns to the reader for further information gathering.
+
+This iterative and collaborative approach ensures that each docstring is not only accurate and informative but also contextually aligned with the broader objectives of the codebase. By leveraging the strengths of each agent, our methodology provides a robust framework for generating high-quality documentation in large-scale repositories.
+
+
+# For Test
+
+The easiest way to interact with DocAgent is through Web App. Assuming the Web App is hosted on remote server.
+
+## Docstring Generation System (Agentic + Hierarchical)
+
+
+Without Web UI:
+```bash
+clear
+./tool/remove_docstrings.sh data/raw_test_repo
+python generate_docstrings.py --repo-path data/raw_test_repo --test-mode context_print
+```
+
+With Web UI:
+```bash
+clear
+./tool/remove_docstrings.sh data/raw_test_repo
+python run_web_ui.py --host 0.0.0.0 --port 5000
+```
+
+## Docstring Eval system
+
+Without WebUI: Manual run the test files under `test/evaluator`.
+
+With WebUI:
+```bash
+python src/web_eval/app.py --host 0.0.0.0 --port 5001
+```
+
+## Test Hierarchical Generation Only (no LLM call)
+
+For test hierarchical generation only (no LLM call), run the following command: (testing on `data/test_repo_vm` and `data/downloaded_repos/AutoSurvey`)
+```bash
+./tool/remove_docstrings.sh data/downloaded_repos/AutoSurvey
+clear
+python generate_docstrings.py --repo-path data/downloaded_repos/AutoSurvey --test-mode
+bash tool/visualize.sh output/dependency_graphs/dependency_graph.json output/dependency_graphs/dependency_graph_visualization.png
+```
+
+## Depreciated Tests
+
+Test Completeness
+```bash
+python test/evaluator/test_completeness.py data/downloaded_repos/AutoSurvey/src/agents/judge.py
+```
+
+Test reader-searcher communication.
+
+```bash
+python test/agent/depreciated_test_orchestrator.py --mode reader-searcher --verbose-context
+```
+
+Remove all docstrings from a repository.
+```bash
+./tool/remove_docstrings.sh <repo_path>
+```
+
+Test hierarchical generation.
+```bash
+python generate_docstrings.py --repo-path data/test_repo_vm --test-mode
+```
+
+Visualize dependency graph.
+```bash
+bash tool/visualize.sh
+```
+
+
+
+# Installation
+
+
+## Create Config File
+
+Create a config folder `config/` and a config file `agent_config.yaml`under `config/`. e.g. `config/agent_config.yaml`:
+
+The structure of config is as follows:
+```bash
+llm:
+  type: "claude"  # Options: openai, claude, huggingface
+  api_key: "your-anthropic-api-key-here"  # Replace with your Anthropic API key
+  model: "claude-3-5-haiku-latest"
+  temperature: 0.1
+  max_output_tokens: 4096
+
+# Flow control parameters
+flow_control:
+  max_reader_search_attempts: 2  # Maximum times reader can call searcher
+  max_verifier_rejections: 3     # Maximum times verifier can reject a docstring
+  status_sleep_time: 3           # Time to sleep between status updates (seconds)
+
+# Perplexity API configuration
+perplexity:
+  api_key: "your-perplexity-api-key-here"  # Replace with your Perplexity API key
+  model: "sonar"  # Default model
+  temperature: 0.1
+  max_output_tokens: 4096
+
+```
+
+## Installation
+
+### Basic Installation
+To install the basic package with core dependencies:
+
+```bash
+pip install -e .
+```
+
+### Install with Additional Features
+
+You can install the package with additional optional dependencies:
+
+```bash
+# For development tools (pytest, black, flake8)
+pip install -e ".[dev]"
+
+# For web UI components
+pip install -e ".[web]"
+
+# For visualization tools
+pip install -e ".[visualization]"
+
+# For CUDA support
+pip install -e ".[cuda]"
+
+# For all optional dependencies
+pip install -e ".[all]"
+```
+
+You can also combine multiple optional dependencies:
+
+```bash
+pip install -e ".[web,visualization]"
+```
+
+## Access Web UI from Local (if running on remote server)
+
+## Running Docstring Generation System
+
+In remote:
+```bash
+
+python run_web_ui.py --host 0.0.0.0 --port 5000
+```
+This tells Flask to listen on all network interfaces, not just the loopback interface.
+
+In local:
+```bash
+ssh -L 5000:localhost:5000 <remote_host>
+```
+
+For example, for devserver, `ssh -L 5000:localhost:5000 dayuyang@devgpu003.rva5.facebook.com`.
+This command creates a tunnel from your local port 5000 to port 5000 on the remote server. After running this command, you can open your browser and go to http://localhost:5000 to access the web interface running on the remote server.
+
+
+kill any program running on port 5000:
+```bash
+lsof -i :5000 | awk 'NR>1 {print $2}' | sort -u | xargs -r kill
+```
+
+## Running Docstring Eval System
+
+In remote:
+```bash
+python src/web_eval/app.py --host 0.0.0.0 --port 5001
+```
+
+In local:
+```
+ssh -L 5001:localhost:5001 dayuyang@devgpu003.rva5.facebook.com
+
+```
+
+
+If run both:
+
+in local, run:
+```bash
+ssh -L 5000:localhost:5000 -L 5001:localhost:5001 -L 5002:localhost:5002 dayuyang@devgpu003.rva5.facebook.com
+
+# 5002 for backup
+```
+
+
+## Serve local LLM
+
+First install vllm
+```bash
+pip install vllm
+```
+
+Run `bash serve_local_llm.sh`
+
+
+# Concerns
+
+- hierachical generation
+    - Circular dependencies
+
+- Import from external source?
+    - assuming "external source" is well-known library and LLM should already know about it?
+
+# TO FIX/ADD/IMPROVE
+
+- If already has docstring, skip. (or al least give an option to skip)
+
+- Improve generation instructions (the LLM will strictly follow the instructions, leading the generation usually too long.)
+    - high-quality docstring also needs to be concise.
+
+- add time out warning (if stucked...)
+
+- Claude has rate limit: `50,000 input tokens per minute per organization`
+
+
+- add error handling capability system wise
+
+- add price calculation
+
+- simple code will no need to use this tool.
+    - before system, a small LLM/ determinstic way to determinate if using the system. (balance between efficiency and effectiveness)
+
+now the logic is file-level, function-level, method-level, class-level.
+
+
+# Evaluator
+
+
+
+## Completeness
+
+
+## Helpfulness
+
+For Summary, Description, Arguments, Parameters, Attributes, each docstring component is evaluated on a 1-5 scale (POOR to EXCELLENT):
+
+For Example, the docstring is evaluated on Binary scale (0 or 1).
+- Evaluates if docstring examples enable users to correctly use the code by comparing predicted usage against ground truth.
+
+
+
+# Vulnerability
+
+1. helpfulness description, when class is too long, may need truncate.
+2. when evaluating parameters/arguments/attributes, the input context (class/function signatures) should be reasonably sized to avoid LLM token limits.
+
+
+
+# Logic Control flow (process function under orchestrator.py)
+
+once searcher is called, reader's memory is refreshed.
+
+once more context is needed by judge from verifier, writer, verifier's memory is refreshed.
+
+# Note
+
+When evaluating examples, the signature must contain decorator `@staticmethod` or `@classmethod`.
+
+when writing docstring for class, first write docstring for __init__ method, then write docstring for other methods, finally write docstring for class. (provide full class code as code component when writing docstring for class)
+
+Method is extremely difficult to handle. Now only support self.method(), instance.method() and ClassName.method(). See `get_child_method` under `CallGraphBuilder` for more details.
+
+
+Error handle: ask reader: if "XXX is not accessible", do not ask the same code component again. If unsuccessful, callgraphbuilder will return something like "XXX is not accessible".
+
+for LLM generated docstring, no triple quotes (\"\"\") is added originally.
+
+
+For generate_docstrings.py. Add features:
+Multiple Passes ("Category" Approach):
+• We split docstring generation for each file into three passes, in this order:
+(a) Top-level functions (i.e., "function")
+(b) Methods inside classes (i.e., "method")
+(c) Classes (i.e., "class")
+Each pass visits all .py files in the repo.
+Immediate File Rewrite After Each Code Component:
+• In each pass, we repeatedly parse a file, gather all code components of the chosen category in ascending line order, pick off the first component, generate a docstring, and immediately rewrite the file. Then we re-parse the updated file before moving on to the next component.
+• This ensures that each code component is added in the final version of the file before the next code component's docstring is generated. It also meets the request for "refresh the python file after each generation for a single code component."
+
+However, this approach is more computationally expensive than generating all docstrings in memory and rewriting once per file, but it achieves the desired incremental rewriting and strict function → method → class ordering.
+
+
+Why the python file is not updated after the docstring is generated for each code component?
+- because updating file needs re-parsing the file and rebuild the AST, which is expensive.
+
+
+
+Dependency clarification for
+
+# Future Work
+
+human in the loop:
+- human can be the judge and can provide more information to the system.
