@@ -6,6 +6,23 @@
 
 DocAgent is a system designed to generate high-quality, context-aware docstrings for Python codebases using a multi-agent approach and hierarchical processing.
 
+## Citation
+
+If you use DocAgent in your research, please cite our paper:
+
+```bibtex
+@misc{yang2025docagent,
+      title={DocAgent: A Multi-Agent System for Automated Code Documentation Generation}, 
+      author={Dayu Yang and Antoine Simoulin and Xin Qian and Xiaoyi Liu and Yuwei Cao and Zhaopu Teng and Grey Yang},
+      year={2025},
+      eprint={2504.08725},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE}
+}
+```
+
+You can find the paper on arXiv: [https://arxiv.org/abs/2504.08725](https://arxiv.org/abs/2504.08725)
+
 ## Table of Contents
 
 - [Motivation](#motivation)
