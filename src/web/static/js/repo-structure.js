@@ -1,3 +1,4 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates
 /**
  * Repository structure visualization for the docstring generation web application.
  * 

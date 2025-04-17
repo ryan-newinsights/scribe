@@ -1,3 +1,4 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates
 /**
  * Log message handler for the docstring generation web application.
  * 

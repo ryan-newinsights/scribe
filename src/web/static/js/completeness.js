@@ -1,3 +1,4 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates
 /**
  * Completeness visualization for the docstring generation web application.
  * 

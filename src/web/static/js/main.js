@@ -1,3 +1,4 @@
+// Copyright (c) Meta Platforms, Inc. and affiliates
 /**
  * Main JavaScript for the docstring generation web application.
  * 
