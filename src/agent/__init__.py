@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 # Import only essential components to avoid circular imports
 from .reader import CodeComponentType
 

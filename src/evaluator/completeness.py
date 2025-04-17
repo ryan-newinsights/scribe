@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 import ast
 import re
 from typing import Dict, List, Optional

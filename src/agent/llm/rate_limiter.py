@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 import time
 from typing import Dict, List, Optional
 from collections import deque

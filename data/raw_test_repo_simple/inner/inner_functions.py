@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 def inner_function():
     """
     Returns a greeting message from an inner function.

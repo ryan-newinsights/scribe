@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 CUDA_VISIBLE_DEVICES=0 python -m vllm.entrypoints.openai.api_server \
   --model Your-Model-Name \
   --tensor-parallel-size 8 \

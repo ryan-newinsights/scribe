@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Entry point for running the docstring generation visualization web application.
 

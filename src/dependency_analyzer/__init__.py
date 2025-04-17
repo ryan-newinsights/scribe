@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Dependency analyzer module for building and processing import dependency graphs 
 between Python code components.

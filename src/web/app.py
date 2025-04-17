@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Main Flask application for the docstring generation visualization.
 

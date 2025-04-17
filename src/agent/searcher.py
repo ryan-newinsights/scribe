@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import Dict, List, Any, Optional
 from .base import BaseAgent
 from .reader import InformationRequest

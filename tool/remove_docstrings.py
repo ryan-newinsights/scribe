@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Tool to remove docstrings from Python files in a repository.
 """

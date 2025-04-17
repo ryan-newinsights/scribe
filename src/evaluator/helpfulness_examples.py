@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import Dict, Any, List, Optional, Tuple, Union
 from dataclasses import dataclass
 from abc import ABC, abstractmethod

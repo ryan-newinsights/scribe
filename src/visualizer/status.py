@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import Dict, Set
 from colorama import Fore, Back, Style, init
 import sys

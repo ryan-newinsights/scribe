@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 import os
 import requests
 from typing import List, Dict, Any

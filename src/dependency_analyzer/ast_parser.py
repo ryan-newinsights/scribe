@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 AST-based Python code parser that extracts dependency information between code components.
 

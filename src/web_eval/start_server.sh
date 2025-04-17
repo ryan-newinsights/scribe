@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) Meta Platforms, Inc. and affiliates
 
 # Default values
 HOST="0.0.0.0"

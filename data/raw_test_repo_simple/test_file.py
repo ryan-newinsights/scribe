@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 def test_function():
     """
     Returns a boolean value indicating a successful test condition.

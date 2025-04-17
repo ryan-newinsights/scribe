@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 class HelperClass:
     """
     Represents a utility for managing and processing data.

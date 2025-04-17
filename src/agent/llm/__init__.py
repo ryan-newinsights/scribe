@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from .base import BaseLLM
 from .openai_llm import OpenAILLM
 from .claude_llm import ClaudeLLM

@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from .base import BaseEvaluator
 from .completeness import (  # Remove 'evaluators.' from the path
     CompletenessEvaluator,

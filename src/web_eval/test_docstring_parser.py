@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (c) Meta Platforms, Inc. and affiliates
 # -*- coding: utf-8 -*-
 """Test script for the parse_google_style_docstring function."""
 

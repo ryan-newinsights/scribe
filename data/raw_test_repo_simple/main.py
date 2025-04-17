@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from helper import HelperClass
 from inner.inner_functions import inner_function, get_random_quote, generate_timestamp, get_system_status, fetch_user_message
 

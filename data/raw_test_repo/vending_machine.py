@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from decimal import Decimal
 from typing import Optional, List, Tuple
 from .models.product import Item

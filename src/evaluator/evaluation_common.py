@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """Common utilities and classes for docstring evaluation."""
 
 from typing import Dict, Any, List, Optional, Tuple

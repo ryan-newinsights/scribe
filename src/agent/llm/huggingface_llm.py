@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import List, Dict, Any, Optional
 from openai import OpenAI
 import torch

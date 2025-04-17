@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Topological sorting utilities for dependency graphs with cycle handling.
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) Meta Platforms, Inc. and affiliates
 
 # Shell script wrapper for the remove_docstrings.py tool
 

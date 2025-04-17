@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Script to analyze statistical significance between docstring helpfulness scores
 of different systems.

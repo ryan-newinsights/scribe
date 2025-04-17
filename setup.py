@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from setuptools import setup, find_packages
 
 # Read the contents of README file

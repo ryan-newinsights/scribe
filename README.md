@@ -149,4 +149,8 @@ If you prefer to use a local LLM (e.g., one hosted via Hugging Face), you can co
 
 3.  **Run DocAgent**: Run the generation process as usual (CLI or Web UI). DocAgent will now send requests to your local LLM.
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 

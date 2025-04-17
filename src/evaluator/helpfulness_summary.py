@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import Dict, Any, List, Optional, Tuple
 import re
 from dataclasses import dataclass

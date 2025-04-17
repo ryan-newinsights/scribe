@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 import ast
 from typing import Dict, List, Optional, Set, Tuple, Union
 from pathlib import Path

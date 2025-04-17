@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates
 from typing import List, Dict, Any, Optional
 import anthropic
 from .base import BaseLLM
