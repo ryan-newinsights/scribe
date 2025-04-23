@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import eventlet
+eventlet.monkey_patch()  
 # Copyright (c) Meta Platforms, Inc. and affiliates
 """
 Web UI Launcher for DocAgent Docstring Generator
