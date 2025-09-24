@@ -72,9 +72,9 @@ def create_app(debug=True):
             })
         
         # Get the configuration
-        llm_type = data.get('llm_type', 'claude')
+        llm_type = data.get('llm_type', 'gemini')
         api_key = data.get('api_key', '')
-        model = data.get('model', 'claude-3-5-haiku-latest')
+        model = data.get('model', 'gemini-2.5-pro')
         
         try:
             # Import the appropriate LLM client based on type
@@ -140,6 +140,37 @@ def create_app(debug=True):
                     return jsonify({
                         'status': 'error',
                         'message': f'Error connecting to OpenAI API: {str(e)}'
+                    })
+            
+            elif llm_type.lower() == 'gemini':
+                try:
+                    import google.generativeai as genai
+                    genai.configure(api_key=api_key)
+                    
+                    # Create a generative model
+                    model_instance = genai.GenerativeModel(model)
+                    
+                    # Send a simple test message
+                    response = model_instance.generate_content(
+                        "Who are you? Please keep your answer very brief."
+                    )
+                    
+                    # Extract the response text
+                    if response and hasattr(response, 'text'):
+                        model_response = response.text
+                    else:
+                        model_response = "No response content"
+                    
+                    return jsonify({
+                        'status': 'success',
+                        'message': 'Successfully connected to Gemini API',
+                        'model_response': model_response
+                    })
+                    
+                except Exception as e:
+                    return jsonify({
+                        'status': 'error',
+                        'message': f'Error connecting to Gemini API: {str(e)}'
                     })
             
             else:

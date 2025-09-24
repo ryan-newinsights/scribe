@@ -17,14 +17,14 @@
 <body>
     <div class="container-fluid vh-100 p-0 d-flex flex-column">
         <!-- Header -->
-        <header class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-            <h1 class="h3 mb-0">DocAgent </h1>
+        <header class="dark-background light-slate p-3 d-flex justify-content-between align-items-center" style="border-bottom: 2px solid #2dd4bf;">
+            <h1 class="h3 mb-0 teal-accent">DocAgent </h1>
             <img src="{{ url_for('static', filename='assets/meta_logo_white.png') }}" alt="Meta Logo" class="header-logo" height="30">
         </header>
         
         <div class="row flex-grow-1 m-0">
             <!-- Sidebar for configuration and completeness -->
-            <div id="sidebar" class="col-md-3 bg-light p-3 sidebar">
+            <div id="sidebar" class="col-md-3 dark-background light-slate p-3 sidebar">
                 <div id="config-section">
                     <h2 class="h4 mb-3">Configuration</h2>
                     <form id="config-form">
@@ -39,9 +39,9 @@
                                 <div class="mb-2">
                                     <label for="llm-type" class="form-label">Type</label>
                                     <select class="form-select" id="llm-type">
+                                        <option value="gemini" selected>Gemini</option>
                                         <option value="claude">Claude</option>
                                         <option value="openai">OpenAI</option>
-                                        <option value="huggingface">HuggingFace</option>
                                     </select>
                                 </div>
                                 <div class="mb-2">
@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label for="llm-model" class="form-label">Model</label>
-                                    <input type="text" class="form-control" id="llm-model" placeholder="e.g., claude-3-5-haiku-latest">
+                                    <input type="text" class="form-control" id="llm-model" placeholder="e.g., gemini-2.5-pro">
                                 </div>
                                 <div class="mb-2">
                                     <label for="llm-temperature" class="form-label">Temperature</label>

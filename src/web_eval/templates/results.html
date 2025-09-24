@@ -12,14 +12,14 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card shadow">
-                    <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">DocAgent - Evaluation Results</h2>
+                    <div class="dark-background light-slate p-3 d-flex justify-content-between align-items-center" style="border-bottom: 2px solid #2dd4bf;">
+                        <h2 class="mb-0 teal-accent">DocAgent - Evaluation Results</h2>
                         <div>
-                            <button id="refreshBtn" class="btn btn-light me-2">
+                            <button id="refreshBtn" class="btn btn-primary me-2">
                                 <span id="refreshSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                 Refresh Evaluation
                             </button>
-                            <a href="{{ url_for('index') }}" class="btn btn-outline-light">Return to Config</a>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary">Return to Config</a>
                         </div>
                     </div>
                     <div class="card-body">

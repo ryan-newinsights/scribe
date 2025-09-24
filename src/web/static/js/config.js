@@ -31,11 +31,11 @@ function loadDefaultConfig() {
 function applyConfigToForm(config) {
     // Set LLM configuration
     if (config.llm) {
-        $('#llm-type').val(config.llm.type || 'claude');
+        $('#llm-type').val(config.llm.type || 'gemini');
         $('#llm-api-key').val(config.llm.api_key || '');
-        $('#llm-model').val(config.llm.model || 'claude-3-5-haiku-latest');
+        $('#llm-model').val(config.llm.model || 'gemini-2.5-pro');
         $('#llm-temperature').val(config.llm.temperature || 0.1);
-        $('#llm-max-tokens').val(config.llm.max_tokens || 4096);
+        $('#llm-max-tokens').val(config.llm.max_tokens || 16384);
     }
     
     // Set flow control configuration

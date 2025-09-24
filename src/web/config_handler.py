@@ -24,11 +24,11 @@ def get_default_config():
     if not default_config_path.exists():
         return {
             'llm': {
-                'type': 'claude',
+                'type': 'gemini',
                 'api_key': '',
-                'model': 'claude-3-5-haiku-latest',
+                'model': 'gemini-2.5-pro',
                 'temperature': 0.1,
-                'max_tokens': 4096
+                'max_tokens': 16384
             },
             'flow_control': {
                 'max_reader_search_attempts': 2,

@@ -3,25 +3,39 @@
 
 /* General Styles */
 body {
-    background-color: #f8f9fa;
+    background-color: #1e293b; /* Dark Background */
+    color: #cbd5e1; /* Light Slate */
 }
 
 .card {
     border-radius: 0.5rem;
     overflow: hidden;
+    background-color: #1e293b; /* Dark Background */
+    border: 1px solid #2dd4bf; /* Teal Accent border */
+    color: #cbd5e1; /* Light Slate */
 }
 
 .card-header {
-    border-bottom: none;
+    border-bottom: 1px solid #2dd4bf; /* Teal Accent border */
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
 }
 
 /* Table Styles */
 .table {
     font-size: 0.9rem;
+    color: #cbd5e1; /* Light Slate */
 }
 
 .table th {
     font-weight: 600;
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
+    color: #cbd5e1; /* Light Slate */
+    border-color: #2dd4bf; /* Teal Accent */
+}
+
+.table td {
+    border-color: #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
 }
 
 .table-responsive {
@@ -33,20 +47,58 @@ body {
 .evaluate-btn {
     font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
+    background-color: #2dd4bf; /* Teal Accent */
+    border-color: #2dd4bf;
+    color: #1e293b; /* Dark Background */
+}
+
+.evaluate-btn:hover {
+    background-color: #047857; /* Dark Emerald */
+    border-color: #047857;
+    color: #cbd5e1; /* Light Slate */
+}
+
+.btn-primary {
+    background-color: #2dd4bf; /* Teal Accent */
+    border-color: #2dd4bf;
+    color: #1e293b; /* Dark Background */
+}
+
+.btn-primary:hover {
+    background-color: #047857; /* Dark Emerald */
+    border-color: #047857;
+    color: #cbd5e1; /* Light Slate */
+}
+
+.btn-secondary {
+    background-color: #047857; /* Dark Emerald */
+    border-color: #047857;
+    color: #cbd5e1; /* Light Slate */
+}
+
+.btn-secondary:hover {
+    background-color: #2dd4bf; /* Teal Accent */
+    border-color: #2dd4bf;
+    color: #1e293b; /* Dark Background */
 }
 
 /* Modal Styles */
 .modal-content {
     border-radius: 0.5rem;
     overflow: hidden;
+    background-color: #1e293b; /* Dark Background */
+    border: 1px solid #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
 }
 
 .modal-header {
-    border-bottom: none;
+    border-bottom: 1px solid #2dd4bf; /* Teal Accent */
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
 }
 
 .modal-footer {
-    border-top: none;
+    border-top: 1px solid #2dd4bf; /* Teal Accent */
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
 }
 
 /* Docstring content display */
@@ -55,6 +107,10 @@ pre#docstringContent {
     overflow-y: auto;
     font-size: 0.9rem;
     white-space: pre-wrap;
+    background-color: #1e293b; /* Dark Background */
+    color: #cbd5e1; /* Light Slate */
+    border: 1px solid #2dd4bf; /* Teal Accent */
+    border-radius: 0.25rem;
 }
 
 /* Badges */
@@ -63,9 +119,45 @@ pre#docstringContent {
     padding: 0.35rem 0.65rem;
 }
 
+.badge-success {
+    background-color: #2dd4bf; /* Teal Accent */
+    color: #1e293b; /* Dark Background */
+}
+
+.badge-warning {
+    background-color: #047857; /* Dark Emerald */
+    color: #cbd5e1; /* Light Slate */
+}
+
+.badge-danger {
+    background-color: #2dd4bf; /* Teal Accent */
+    color: #1e293b; /* Dark Background */
+}
+
 /* Alert Styles */
 .alert {
     border-radius: 0.5rem;
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
+    border: 1px solid #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
+}
+
+.alert-success {
+    background-color: rgba(45, 212, 191, 0.2); /* Teal Accent with more opacity */
+    border-color: #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
+}
+
+.alert-warning {
+    background-color: rgba(4, 120, 87, 0.2); /* Dark Emerald with opacity */
+    border-color: #047857; /* Dark Emerald */
+    color: #cbd5e1; /* Light Slate */
+}
+
+.alert-danger {
+    background-color: rgba(45, 212, 191, 0.2); /* Teal Accent with opacity */
+    border-color: #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
 }
 
 /* Responsive Adjustments */
@@ -92,15 +184,33 @@ pre#docstringContent {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #1e293b; /* Dark Background */
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #2dd4bf; /* Teal Accent */
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #047857; /* Dark Emerald */
+}
+
+/* Form elements */
+.form-control {
+    background-color: #1e293b; /* Dark Background */
+    border: 1px solid #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
+}
+
+.form-control:focus {
+    background-color: #1e293b; /* Dark Background */
+    border-color: #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
+    box-shadow: 0 0 0 0.2rem rgba(45, 212, 191, 0.25);
+}
+
+.form-label {
+    color: #cbd5e1; /* Light Slate */
 } 

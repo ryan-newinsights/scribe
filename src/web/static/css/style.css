@@ -2,11 +2,15 @@
 /* Main layout styles */
 body {
     overflow-x: hidden;
+    background-color: #1e293b; /* Dark Background */
+    color: #cbd5e1; /* Light Slate */
 }
 
 .sidebar {
     transition: width 0.3s ease;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #1e293b; /* Dark Background */
+    border-right: 1px solid #2dd4bf; /* Teal Accent border */
 }
 
 /* Header logo styles */
@@ -31,9 +35,9 @@ body {
 }
 
 .agent-box.active {
-    border-color: #198754;
-    box-shadow: 0 0 5px rgba(25, 135, 84, 0.5);
-    background-color: rgba(25, 135, 84, 0.1);
+    border-color: #2dd4bf; /* Teal Accent */
+    box-shadow: 0 0 5px rgba(45, 212, 191, 0.5);
+    background-color: rgba(45, 212, 191, 0.1);
 }
 
 .agent-box h3 {
@@ -44,9 +48,10 @@ body {
 .component-info {
     margin-top: 20px;
     padding: 10px;
-    background-color: #f8f9fa;
+    background-color: rgba(45, 212, 191, 0.1); /* Teal Accent with opacity */
     border-radius: 5px;
-    border-left: 3px solid #007bff;
+    border-left: 3px solid #2dd4bf; /* Teal Accent */
+    color: #cbd5e1; /* Light Slate */
 }
 
 /* Agent workflow visualization styles */
@@ -55,20 +60,20 @@ body {
 }
 
 .workflow-node circle {
-    fill: #ffffff;  /* White background by default */
-    stroke: #6c757d;
+    fill: #1e293b;  /* Dark Background by default */
+    stroke: #cbd5e1; /* Light Slate */
     stroke-width: 1.5px;
     transition: all 0.3s ease;
 }
 
 .workflow-node.active circle {
-    fill: #198754;  /* Green background when active */
-    stroke: #0d6efd;
+    fill: #2dd4bf;  /* Teal Accent when active */
+    stroke: #047857; /* Dark Emerald */
     stroke-width: 2px;
 }
 
 .workflow-link {
-    stroke: #adb5bd;
+    stroke: #2dd4bf; /* Teal Accent */
     stroke-width: 2px;
     fill: none;
     marker-end: url(#arrowhead);
@@ -78,13 +83,13 @@ body {
     font-size: 12px;
     text-anchor: middle;
     dominant-baseline: middle;
-    fill: #212529;
+    fill: #cbd5e1; /* Light Slate */
     pointer-events: none;
     transition: all 0.3s ease;
 }
 
 .workflow-node.active .workflow-label {
-    fill: #fff;
+    fill: #1e293b; /* Dark Background for contrast */
     font-weight: bold;
 }
 
@@ -92,7 +97,7 @@ body {
     font-size: 14px;
     text-anchor: middle;
     dominant-baseline: middle;
-    fill: #666;
+    fill: #cbd5e1; /* Light Slate */
     font-weight: bold;
 }
 
@@ -114,19 +119,19 @@ body {
 }
 
 .repo-node-complete {
-    fill: #198754;  /* Green */
+    fill: #2dd4bf;  /* Teal Accent */
 }
 
 .repo-node-in-progress {
-    fill: #ffc107;  /* Yellow */
+    fill: #047857;  /* Dark Emerald */
 }
 
 .repo-node-not-started {
-    fill: #f8f9fa;  /* Light grey */
+    fill: #cbd5e1;  /* Light Slate */
 }
 
 .repo-node-focus {
-    stroke: #dc3545;  /* Red */
+    stroke: #2dd4bf;  /* Teal Accent */
     stroke-width: 2;
 }
 
@@ -135,11 +140,12 @@ body {
     font-family: monospace;
     font-size: 0.85rem;
     line-height: 1.5;
-    background-color: #212529;
-    color: #f8f9fa;
+    background-color: #1e293b; /* Dark Background */
+    color: #cbd5e1; /* Light Slate */
     border-radius: 5px;
     height: 250px;
     max-height: 250px;
+    border: 1px solid #2dd4bf; /* Teal Accent border */
 }
 
 .log-line {
@@ -149,24 +155,26 @@ body {
 }
 
 .log-info {
-    color: #f8f9fa;
+    color: #cbd5e1; /* Light Slate */
 }
 
 .log-warning {
-    color: #ffc107;
+    color: #047857; /* Dark Emerald */
 }
 
 .log-error {
-    color: #dc3545;
+    color: #2dd4bf; /* Teal Accent for errors */
 }
 
 .log-debug {
-    color: #6c757d;
+    color: #cbd5e1; /* Light Slate with opacity */
+    opacity: 0.7;
 }
 
 /* Completeness table styles */
 .completeness-table {
     font-size: 0.9rem;
+    color: #cbd5e1; /* Light Slate */
 }
 
 .progress-cell {
@@ -177,6 +185,60 @@ body {
     height: 10px;
     margin-top: 5px;
     border-radius: 5px;
+    background-color: #2dd4bf; /* Teal Accent */
+}
+
+/* Custom color scheme classes */
+.teal-accent {
+    color: #2dd4bf;
+}
+
+.teal-accent-bg {
+    background-color: #2dd4bf;
+}
+
+.dark-emerald {
+    color: #047857;
+}
+
+.dark-emerald-bg {
+    background-color: #047857;
+}
+
+.light-slate {
+    color: #cbd5e1;
+}
+
+.light-slate-bg {
+    background-color: #cbd5e1;
+}
+
+.dark-background {
+    background-color: #1e293b;
+}
+
+/* Button styles with new colors */
+.btn-primary {
+    background-color: #2dd4bf;
+    border-color: #2dd4bf;
+    color: #1e293b;
+}
+
+.btn-primary:hover {
+    background-color: #047857;
+    border-color: #047857;
+}
+
+.btn-secondary {
+    background-color: #047857;
+    border-color: #047857;
+    color: #cbd5e1;
+}
+
+.btn-secondary:hover {
+    background-color: #2dd4bf;
+    border-color: #2dd4bf;
+    color: #1e293b;
 }
 
 /* Animation for focus transitions */
