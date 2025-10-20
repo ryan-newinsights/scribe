@@ -37,6 +37,15 @@ def get_default_config():
             },
             'docstring_options': {
                 'overwrite_docstrings': False
+            },
+            'current_provider_tier': 'free',
+            'user_overrides': {
+                'enable_conservative_limits': True,
+                'conservative_percentage': 0.8,
+                'max_components_per_minute': 8,
+                'delay_between_requests': 2000,
+                'enable_batch_processing': True,
+                'batch_size': 3
             }
         }
     
@@ -44,6 +53,94 @@ def get_default_config():
         config = yaml.safe_load(f)
     
     return config
+
+def get_provider_limits(provider_type, tier=None):
+    """
+    Get rate limits for a specific provider and tier.
+    
+    Args:
+        provider_type: The LLM provider ('gemini', 'claude', 'openai')
+        tier: The tier level (optional, will use default if not provided)
+    
+    Returns:
+        Dictionary containing the provider limits
+    """
+    config = get_default_config()
+    provider_limits = config.get('provider_limits', {})
+    
+    if provider_type not in provider_limits:
+        # Fallback to default limits if provider not found
+        return {
+            'requests_per_minute': 50,
+            'input_tokens_per_minute': 20000,
+            'output_tokens_per_minute': 8000,
+            'tier_name': 'Unknown'
+        }
+    
+    provider_config = provider_limits[provider_type]
+    
+    # If no tier specified, use the current provider tier
+    if not tier:
+        current_tier = config.get('current_provider_tier', 'free')
+        tier = current_tier
+    
+    # Map tier names to provider-specific tiers
+    tier_mapping = {
+        'free': 'free',
+        'pay_as_you_go': 'pay_as_you_go',
+        'enterprise': 'enterprise',
+        'standard': 'standard',
+        'premium': 'premium'
+    }
+    
+    # Find the appropriate tier
+    tier_key = tier_mapping.get(tier, tier)
+    if tier_key not in provider_config:
+        # Fallback to first available tier
+        tier_key = list(provider_config.keys())[0]
+    
+    return provider_config[tier_key]
+
+def get_effective_rate_limits(provider_type, tier=None):
+    """
+    Get effective rate limits after applying user overrides.
+    
+    Args:
+        provider_type: The LLM provider ('gemini', 'claude', 'openai')
+        tier: The tier level (optional)
+    
+    Returns:
+        Dictionary containing the effective rate limits
+    """
+    config = get_default_config()
+    provider_limits = get_provider_limits(provider_type, tier)
+    user_overrides = config.get('user_overrides', {})
+    
+    # Start with provider limits
+    effective_limits = provider_limits.copy()
+    
+    # Apply conservative percentage if enabled
+    if user_overrides.get('enable_conservative_limits', False):
+        conservative_percentage = user_overrides.get('conservative_percentage', 0.8)
+        effective_limits['requests_per_minute'] = int(
+            effective_limits['requests_per_minute'] * conservative_percentage
+        )
+        effective_limits['input_tokens_per_minute'] = int(
+            effective_limits['input_tokens_per_minute'] * conservative_percentage
+        )
+        effective_limits['output_tokens_per_minute'] = int(
+            effective_limits['output_tokens_per_minute'] * conservative_percentage
+        )
+    
+    # Add user override settings
+    effective_limits.update({
+        'delay_between_requests': user_overrides.get('delay_between_requests', 1000),
+        'max_components_per_minute': user_overrides.get('max_components_per_minute', 10),
+        'enable_batch_processing': user_overrides.get('enable_batch_processing', False),
+        'batch_size': user_overrides.get('batch_size', 5)
+    })
+    
+    return effective_limits
 
 def validate_config(config):
     """

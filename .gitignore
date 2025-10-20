@@ -1,2 +1,4 @@
 config/agent_config.yaml
 tool/add_header.sh.DS_Store
+.DS_Store
+**/.DS_Store

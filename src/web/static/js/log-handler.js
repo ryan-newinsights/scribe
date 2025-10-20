@@ -16,6 +16,11 @@ const MAX_LOG_LINES = 5000;
  * @param {string} message - The log message to display
  */
 function addLogMessage(level, message) {
+    // Add to log export tracking if available
+    if (typeof addLogEntry === 'function') {
+        addLogEntry(level.toUpperCase(), message);
+    }
+    
     // Create a CSS class based on the log level
     let logClass = 'log-info';
     switch (level.toLowerCase()) {

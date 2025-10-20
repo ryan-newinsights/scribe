@@ -45,6 +45,16 @@ $(document).ready(function() {
     
     // Initialize accordion functionality
     initAccordionHandlers();
+    
+    // Initialize provider limits handlers
+    if (typeof initProviderLimitsHandlers === 'function') {
+        initProviderLimitsHandlers();
+    }
+    
+    // Initialize log export functionality
+    if (typeof initLogExport === 'function') {
+        initLogExport();
+    }
 });
 
 /**

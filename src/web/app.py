@@ -257,4 +257,156 @@ def create_app(debug=True):
     
     # Additional routes and event handlers can be added here
     
+    @app.route('/api/export_logs', methods=['POST'])
+    def export_logs():
+        """Export processing logs in various formats."""
+        try:
+            data = request.json
+            format_type = data.get('format', 'json')
+            include_logs = data.get('include_logs', True)
+            include_api_calls = data.get('include_api_calls', True)
+            include_rate_limits = data.get('include_rate_limits', True)
+            include_config = data.get('include_config', True)
+            include_stats = data.get('include_stats', False)
+            
+            # Build export data
+            export_data = {
+                'metadata': {
+                    'export_time': datetime.now().isoformat(),
+                    'format': format_type,
+                    'version': '1.0'
+                }
+            }
+            
+            if include_config:
+                # Load current configuration
+                from .config_handler import get_default_config
+                export_data['config'] = get_default_config()
+            
+            if include_logs:
+                # Get recent logs (this would need to be implemented with proper log storage)
+                export_data['logs'] = []
+            
+            if include_api_calls:
+                # Get API call history (this would need to be implemented with proper tracking)
+                export_data['api_calls'] = []
+            
+            if include_rate_limits:
+                # Get rate limit events (this would need to be implemented with proper tracking)
+                export_data['rate_limit_events'] = []
+            
+            if include_stats:
+                # Get processing statistics
+                export_data['stats'] = {
+                    'start_time': None,
+                    'end_time': None,
+                    'total_components': 0,
+                    'processed_components': 0,
+                    'errors': 0,
+                    'warnings': 0
+                }
+            
+            # Generate content based on format
+            if format_type == 'json':
+                content = json.dumps(export_data, indent=2)
+                mimetype = 'application/json'
+                extension = 'json'
+            elif format_type == 'txt':
+                content = generate_text_export(export_data)
+                mimetype = 'text/plain'
+                extension = 'txt'
+            elif format_type == 'csv':
+                content = generate_csv_export(export_data)
+                mimetype = 'text/csv'
+                extension = 'csv'
+            else:
+                return jsonify({'status': 'error', 'message': 'Unsupported export format'}), 400
+            
+            # Return the content for client-side download
+            return jsonify({
+                'status': 'success',
+                'content': content,
+                'mimetype': mimetype,
+                'extension': extension
+            })
+            
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+
+    def generate_text_export(data):
+        """Generate text format export."""
+        text = f"""Scribe Processing Logs Export
+Generated: {data['metadata']['export_time']}
+Format: {data['metadata']['format']}
+Version: {data['metadata']['version']}
+
+{'=' * 50}
+
+"""
+        
+        if 'config' in data and data['config']:
+            config = data['config']
+            text += f"""CONFIGURATION
+{'=' * 20}
+Provider: {config.get('llm', {}).get('type', 'Unknown')}
+Model: {config.get('llm', {}).get('model', 'Unknown')}
+API Tier: {config.get('current_provider_tier', 'Unknown')}
+
+"""
+        
+        if 'stats' in data and data['stats']:
+            stats = data['stats']
+            text += f"""PROCESSING STATISTICS
+{'=' * 25}
+Start Time: {stats.get('start_time', 'Unknown')}
+End Time: {stats.get('end_time', 'In Progress')}
+Total Components: {stats.get('total_components', 0)}
+Processed Components: {stats.get('processed_components', 0)}
+Errors: {stats.get('errors', 0)}
+Warnings: {stats.get('warnings', 0)}
+
+"""
+        
+        if 'logs' in data and data['logs']:
+            text += f"""PROCESSING LOGS
+{'=' * 20}
+"""
+            for log in data['logs']:
+                text += f"[{log.get('timestamp', 'Unknown')}] {log.get('level', 'INFO')}: {log.get('message', '')}\n"
+            text += "\n"
+        
+        return text
+
+    def generate_csv_export(data):
+        """Generate CSV format export."""
+        csv = 'Timestamp,Type,Level,Provider,Model,Message,Details\n'
+        
+        if 'logs' in data and data['logs']:
+            for log in data['logs']:
+                row = [
+                    f'"{log.get("timestamp", "")}"',
+                    '"Log"',
+                    f'"{log.get("level", "")}"',
+                    '""',
+                    '""',
+                    f'"{log.get("message", "").replace('"', '""')}"',
+                    '""'
+                ]
+                csv += ','.join(row) + '\n'
+        
+        if 'api_calls' in data and data['api_calls']:
+            for call in data['api_calls']:
+                row = [
+                    f'"{call.get("timestamp", "")}"',
+                    '"API Call"',
+                    '"INFO"',
+                    f'"{call.get("provider", "")}"',
+                    f'"{call.get("model", "")}"',
+                    f'"API Call - {call.get("input_tokens", 0)} input, {call.get("output_tokens", 0)} output tokens"',
+                    f'"Duration: {call.get("duration", 0)}ms"'
+                ]
+                csv += ','.join(row) + '\n'
+        
+        return csv
+    
     return app, socketio 

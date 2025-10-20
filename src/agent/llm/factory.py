@@ -31,23 +31,30 @@ class LLMFactory:
         if not model:
             raise ValueError("Model must be specified in the config file")
         
-        # Extract rate limit settings from config
-        # First check if there are specific rate limits in the LLM config
-        rate_limits = config.get("rate_limits", {})
-        
-        # If not, check if there are global rate limits for this provider type
-        global_config = LLMFactory.load_config()
-        if not rate_limits and "rate_limits" in global_config:
-            # Map LLM types to provider names in rate_limits section
-            provider_map = {
-                "openai": "openai",
-                "claude": "claude",
-                "gemini": "gemini"
+        # Load provider-specific rate limits
+        try:
+            from ..web.config_handler import get_effective_rate_limits
+            effective_limits = get_effective_rate_limits(llm_type)
+            rate_limits = {
+                "requests_per_minute": effective_limits.get("requests_per_minute", 50),
+                "input_tokens_per_minute": effective_limits.get("input_tokens_per_minute", 20000),
+                "output_tokens_per_minute": effective_limits.get("output_tokens_per_minute", 8000),
+                "delay_between_requests": effective_limits.get("delay_between_requests", 1000),
+                "max_components_per_minute": effective_limits.get("max_components_per_minute", 10),
+                "enable_batch_processing": effective_limits.get("enable_batch_processing", False),
+                "batch_size": effective_limits.get("batch_size", 5)
             }
-            provider_key = provider_map.get(llm_type, llm_type)
-            provider_limits = global_config.get("rate_limits", {}).get(provider_key, {})
-            if provider_limits:
-                rate_limits = provider_limits
+        except ImportError:
+            # Fallback to default rate limits if config handler not available
+            rate_limits = {
+                "requests_per_minute": 50,
+                "input_tokens_per_minute": 20000,
+                "output_tokens_per_minute": 8000,
+                "delay_between_requests": 1000,
+                "max_components_per_minute": 10,
+                "enable_batch_processing": False,
+                "batch_size": 5
+            }
         
         if llm_type == "openai":
             return OpenAILLM(

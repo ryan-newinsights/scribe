@@ -68,6 +68,64 @@
                                     <label for="llm-max-tokens" class="form-label">Max Tokens</label>
                                     <input type="number" class="form-control" id="llm-max-tokens" value="4096">
                                 </div>
+                                
+                                <!-- Provider Tier Selection -->
+                                <div class="mb-2">
+                                    <label for="provider-tier" class="form-label">API Tier</label>
+                                    <select class="form-select" id="provider-tier">
+                                        <option value="free">Free</option>
+                                        <option value="pay_as_you_go">Pay-as-you-go</option>
+                                        <option value="enterprise">Enterprise</option>
+                                        <option value="standard">Standard</option>
+                                        <option value="premium">Premium</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Current Provider Limits Display -->
+                                <div class="mb-2">
+                                    <label class="form-label">Current Limits</label>
+                                    <div id="provider-limits-display" class="card p-2 bg-light">
+                                        <small class="text-muted">Select provider and tier to see limits</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conservative Settings -->
+                                <div class="mb-2">
+                                    <label class="form-label">Conservative Settings</label>
+                                    <div class="card p-2">
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="enable-conservative-limits" checked>
+                                            <label class="form-check-label" for="enable-conservative-limits">
+                                                Use 80% of provider limits
+                                            </label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="max-components-per-minute" class="form-label">Max Components/Min</label>
+                                                <input type="number" class="form-control form-control-sm" id="max-components-per-minute" value="8">
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="delay-between-requests" class="form-label">Delay (ms)</label>
+                                                <input type="number" class="form-control form-control-sm" id="delay-between-requests" value="2000">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enable-batch-processing" checked>
+                                                    <label class="form-check-label" for="enable-batch-processing">
+                                                        Batch Processing
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="batch-size" class="form-label">Batch Size</label>
+                                                <input type="number" class="form-control form-control-sm" id="batch-size" value="3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div class="text-end">
                                     <button type="button" class="btn btn-outline-primary btn-sm" id="test-api-button">
                                         <i class="fas fa-vial"></i> Test API
@@ -191,7 +249,17 @@
                         <h2 class="accordion-header" id="logsHeader">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#logsCollapse" aria-expanded="false" aria-controls="logsCollapse">
                                 <i class="fas fa-terminal me-2"></i>Processing Logs
-                                <span id="progress-time" class="ms-auto badge bg-secondary">Elapsed: 00:00</span>
+                                <div class="ms-auto d-flex align-items-center">
+                                    <div class="btn-group btn-group-sm me-2" role="group">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="export-logs-btn" title="Export Logs">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-logs-btn" title="Clear Logs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <span id="progress-time" class="badge bg-secondary">Elapsed: 00:00</span>
+                                </div>
                             </button>
                         </h2>
                         <div id="logsCollapse" class="accordion-collapse collapse" aria-labelledby="logsHeader" data-bs-parent="#mainAccordion">
@@ -208,6 +276,77 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Export Modal -->
+    <div class="modal fade" id="log-export-modal" tabindex="-1" aria-labelledby="log-export-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="log-export-modal-label">Export Processing Logs</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="export-format" class="form-label">Export Format</label>
+                        <select class="form-select" id="export-format">
+                            <option value="json">JSON (Detailed)</option>
+                            <option value="txt">Text (Simple)</option>
+                            <option value="csv">CSV (Structured)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="export-content" class="form-label">Export Content</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include-logs" checked>
+                            <label class="form-check-label" for="include-logs">
+                                Processing Logs
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include-api-calls" checked>
+                            <label class="form-check-label" for="include-api-calls">
+                                API Call Details
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include-rate-limits" checked>
+                            <label class="form-check-label" for="include-rate-limits">
+                                Rate Limit Events
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include-config" checked>
+                            <label class="form-check-label" for="include-config">
+                                Configuration Used
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include-stats">
+                            <label class="form-check-label" for="include-stats">
+                                Processing Statistics
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="export-filename" class="form-label">Filename (optional)</label>
+                        <input type="text" class="form-control" id="export-filename" placeholder="Auto-generated if empty">
+                    </div>
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fas fa-info-circle me-1"></i>
+                            Exported logs include timestamps, processing details, and API call information for troubleshooting.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm-export-btn">
+                        <i class="fas fa-download me-1"></i>Export Logs
+                    </button>
                 </div>
             </div>
         </div>
@@ -253,5 +392,6 @@
     <script src="{{ url_for('static', filename='js/log-handler.js') }}"></script>
     <script src="{{ url_for('static', filename='js/completeness.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/log_export.js') }}"></script>
 </body>
 </html> 

@@ -20,29 +20,53 @@ class RateLimiter:
     def __init__(
         self,
         provider: str,
-        requests_per_minute: int,
-        input_tokens_per_minute: int,
-        output_tokens_per_minute: int,
-        input_token_price_per_million: float,
-        output_token_price_per_million: float,
-        buffer_percentage: float = 0.1  # Buffer to avoid hitting exact limits
+        requests_per_minute: int = None,
+        input_tokens_per_minute: int = None,
+        output_tokens_per_minute: int = None,
+        input_token_price_per_million: float = 0.0,
+        output_token_price_per_million: float = 0.0,
+        buffer_percentage: float = 0.1,  # Buffer to avoid hitting exact limits
+        config_path: str = None
     ):
         """
         Initialize the rate limiter.
         
         Args:
-            provider: LLM provider name ("openai" or "claude")
-            requests_per_minute: Maximum requests per minute
-            input_tokens_per_minute: Maximum input tokens per minute
-            output_tokens_per_minute: Maximum output tokens per minute
+            provider: LLM provider name ("gemini", "openai", "claude")
+            requests_per_minute: Maximum requests per minute (optional, will load from config)
+            input_tokens_per_minute: Maximum input tokens per minute (optional)
+            output_tokens_per_minute: Maximum output tokens per minute (optional)
             input_token_price_per_million: Price per million input tokens
             output_token_price_per_million: Price per million output tokens
             buffer_percentage: Percentage buffer to avoid hitting exact limits
+            config_path: Path to configuration file (optional)
         """
         self.provider = provider
+        
+        # Load provider-specific limits if not provided
+        if requests_per_minute is None or input_tokens_per_minute is None or output_tokens_per_minute is None:
+            try:
+                from ...web.config_handler import get_effective_rate_limits
+                effective_limits = get_effective_rate_limits(provider)
+                requests_per_minute = requests_per_minute or effective_limits.get('requests_per_minute', 50)
+                input_tokens_per_minute = input_tokens_per_minute or effective_limits.get('input_tokens_per_minute', 20000)
+                output_tokens_per_minute = output_tokens_per_minute or effective_limits.get('output_tokens_per_minute', 8000)
+                requests_per_day = effective_limits.get('requests_per_day', None)
+                logger.info(f"Loaded provider-specific limits for {provider}: {requests_per_minute} req/min, {input_tokens_per_minute} input tokens/min, {output_tokens_per_minute} output tokens/min")
+                if requests_per_day:
+                    logger.info(f"Daily limit: {requests_per_day} requests/day")
+            except ImportError:
+                # Fallback to default limits if config handler not available
+                requests_per_minute = requests_per_minute or 50
+                input_tokens_per_minute = input_tokens_per_minute or 20000
+                output_tokens_per_minute = output_tokens_per_minute or 8000
+                requests_per_day = None
+                logger.warning(f"Could not load provider-specific limits for {provider}, using defaults")
+        
         self.requests_per_minute = requests_per_minute * (1 - buffer_percentage)
         self.input_tokens_per_minute = input_tokens_per_minute * (1 - buffer_percentage)
         self.output_tokens_per_minute = output_tokens_per_minute * (1 - buffer_percentage)
+        self.requests_per_day = requests_per_day * (1 - buffer_percentage) if requests_per_day else None
         
         # Pricing
         self.input_token_price = input_token_price_per_million / 1_000_000
@@ -52,6 +76,9 @@ class RateLimiter:
         self.request_timestamps = deque()
         self.input_token_usage = deque()  # Tuples of (timestamp, token_count)
         self.output_token_usage = deque()  # Tuples of (timestamp, token_count)
+        
+        # Daily tracking (24 hour window)
+        self.daily_request_timestamps = deque()
         
         # Total usage stats
         self.total_requests = 0
@@ -108,6 +135,12 @@ class RateLimiter:
                 self._clean_old_entries(self.request_timestamps, current_time)
                 self._clean_old_entries(self.input_token_usage, current_time)
                 self._clean_old_entries(self.output_token_usage, current_time)
+                
+                # Clean daily entries (older than 24 hours)
+                if self.requests_per_day:
+                    cutoff_time = current_time - (24 * 60 * 60)  # 24 hours ago
+                    while self.daily_request_timestamps and self.daily_request_timestamps[0] < cutoff_time:
+                        self.daily_request_timestamps.popleft()
                 
                 # Calculate current usage
                 current_requests = len(self.request_timestamps)
