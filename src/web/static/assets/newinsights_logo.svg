@@ -1,0 +1,7 @@
+<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+  <!-- NewInsights Eye Icon -->
+  <path d="M15 5C9.5 5 5 9.5 5 15s4.5 10 10 10 10-4.5 10-10S20.5 5 15 5zM15 23c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8S19.4 23 15 23z" fill="white"/>
+  <circle cx="15" cy="15" r="6" fill="none" stroke="white" stroke-width="2"/>
+  <circle cx="15" cy="15" r="3" fill="white"/>
+  <circle cx="17" cy="13" r="1" fill="#2dd4bf"/>
+</svg>
