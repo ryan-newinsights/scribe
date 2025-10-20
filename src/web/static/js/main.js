@@ -42,6 +42,9 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         initAgentWorkflow();
     });
+    
+    // Initialize accordion functionality
+    initAccordionHandlers();
 });
 
 /**
@@ -329,18 +332,25 @@ function stopGeneration() {
 function showConfigView() {
     $('#main-content').addClass('d-none');
     $('#sidebar').removeClass('col-md-3').addClass('col-md-12');
-    $('#config-section').removeClass('d-none');
-    $('#completeness-section').addClass('d-none');
+    
+    // Expand configuration accordion and collapse completeness
+    var configCollapse = new bootstrap.Collapse(document.getElementById('configCollapse'), { show: true });
+    var completenessCollapse = new bootstrap.Collapse(document.getElementById('completenessCollapse'), { show: false });
 }
 
 /**
  * Show the running view.
  */
 function showRunningView() {
-    $('#config-section').addClass('d-none');
-    $('#completeness-section').removeClass('d-none');
     $('#sidebar').removeClass('col-md-12').addClass('col-md-3');
     $('#main-content').removeClass('d-none');
+    
+    // Expand completeness accordion and collapse config
+    var completenessCollapse = new bootstrap.Collapse(document.getElementById('completenessCollapse'), { show: true });
+    var configCollapse = new bootstrap.Collapse(document.getElementById('configCollapse'), { show: false });
+    
+    // Expand agent status accordion by default when running
+    var agentStatusCollapse = new bootstrap.Collapse(document.getElementById('agentStatusCollapse'), { show: true });
     
     // Make sure the agent workflow is initialized
     setTimeout(function() {
@@ -459,6 +469,75 @@ function loadCompletenessData() {
                     Error loading completeness data: ${error}
                 </div>
             `);
+        }
+    });
+}
+
+/**
+ * Initialize accordion event handlers and behaviors.
+ */
+function initAccordionHandlers() {
+    // Handle sidebar accordion events
+    $('#configCollapse').on('shown.bs.collapse', function() {
+        // Auto-focus on first input when config is expanded
+        setTimeout(() => {
+            $('#repo-path').focus();
+        }, 300);
+    });
+    
+    $('#completenessCollapse').on('shown.bs.collapse', function() {
+        // Load completeness data when expanded
+        if (processRunning) {
+            loadCompletenessData();
+        }
+    });
+    
+    // Handle main accordion events
+    $('#agentStatusCollapse').on('shown.bs.collapse', function() {
+        // Reinitialize agent workflow when expanded
+        setTimeout(() => {
+            initAgentWorkflow();
+        }, 300);
+    });
+    
+    $('#repoStructureCollapse').on('shown.bs.collapse', function() {
+        // Trigger repository structure update if needed
+        if (processRunning) {
+            // Repository structure updates are handled via Socket.IO
+            console.log('Repository structure accordion expanded');
+        }
+    });
+    
+    $('#logsCollapse').on('shown.bs.collapse', function() {
+        // Auto-scroll to bottom of logs when expanded
+        setTimeout(() => {
+            const logContainer = document.getElementById('log-container');
+            if (logContainer) {
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+        }, 100);
+    });
+    
+    // Add keyboard shortcuts for accordion navigation
+    $(document).on('keydown', function(e) {
+        // Ctrl/Cmd + 1-5 to toggle accordion sections
+        if ((e.ctrlKey || e.metaKey) && e.key >= '1' && e.key <= '5') {
+            e.preventDefault();
+            const accordionMap = {
+                '1': '#configCollapse',
+                '2': '#completenessCollapse', 
+                '3': '#agentStatusCollapse',
+                '4': '#repoStructureCollapse',
+                '5': '#logsCollapse'
+            };
+            
+            const targetCollapse = accordionMap[e.key];
+            if (targetCollapse) {
+                const collapseElement = $(targetCollapse);
+                if (collapseElement.length) {
+                    collapseElement.collapse('toggle');
+                }
+            }
         }
     });
 } 
