@@ -43,6 +43,9 @@ class RateLimiter:
         """
         self.provider = provider
         
+        # Initialize requests_per_day to None
+        requests_per_day = None
+        
         # Load provider-specific limits if not provided
         if requests_per_minute is None or input_tokens_per_minute is None or output_tokens_per_minute is None:
             try:
